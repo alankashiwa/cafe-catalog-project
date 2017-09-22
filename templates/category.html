@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% block content %}
+<h1 class="my-4">{{ category.name.capitalize() }}</h1>
+<div class="row">
+  {% for item in items %}
+  <div class="col-lg-4 col-sm-6 catalog-item">
+    <div class="card p-2">
+      <img class="card-img-top" src="{{ item.image_url }}" alt="{{ item.name }}">
+      <div class="card-block text-center">
+        <h5 class="card-title m-3">{{ item.name.capitalize() }}</h5>
+        <p class="card-text"><a href="{{ url_for('item', category_name=category.name, item_name=item.name)}}">Detail</a></p>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock content %}
