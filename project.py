@@ -30,24 +30,6 @@ def mainPage():
     categories = session.query(Category).all()
     return render_template('mainPage.html', categories=categories)
 
-@app.route('/catalog/<string:category_name>/items/')
-def category(category_name):
-    categories = session.query(Category).all()
-    category = session.query(Category).filter_by(name=category_name).one()
-    items = session.query(Item).filter_by(category_id=category.id).all()
-    return render_template('category.html',
-                            categories=categories,
-                            category=category,
-                            items=items)
-
-@app.route('/catalog/<string:category_name>/<string:item_name>/')
-def item(category_name, item_name):
-    categories = session.query(Category).all()
-    item = session.query(Item).filter_by(name=item_name).one()
-    return render_template('item.html',
-                            categories=categories,
-                            item=item)
-
 @app.route('/login/')
 def login():
     categories = session.query(Category).all()
@@ -176,13 +158,39 @@ def gdisconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
 
-@app.route('/catalog/<string:category_name>/edit/')
-def editItem(category_name):
-    return '/catalog/category_name/edit/'
+@app.route('/catalog/<string:category_name>/items/')
+def category(category_name):
+    categories = session.query(Category).all()
+    category = session.query(Category).filter_by(name=category_name).one()
+    items = session.query(Item).filter_by(category_id=category.id).all()
+    return render_template('category.html',
+                            categories=categories,
+                            category=category,
+                            items=items)
 
-@app.route('/catalog/<string:category_name>/delete/')
-def deleteItem(category_name):
-    return '/catalog/category_name/delete/'
+@app.route('/catalog/<string:category_name>/<string:item_name>/')
+def item(category_name, item_name):
+    categories = session.query(Category).all()
+    item = session.query(Item).filter_by(name=item_name).one()
+    return render_template('item.html',
+                            categories=categories,
+                            item=item)
+
+@app.route('/catalog/new/', methods=['GET', 'POST'])
+def createItem():
+    return '/catalog/new/'
+
+@app.route('/catalog/<string:item_name>/edit/', methods=['GET', 'POST'])
+def editItem(item_name):
+    categories = session.query(Category).all()
+    item = session.query(Item).filter_by(name=item_name).one()
+    return render_template('editItem.html', categories=categories, item=item)
+
+@app.route('/catalog/<string:item_name>/delete/', methods=['GET', 'POST'])
+def deleteItem(item_name):
+    categories = session.query(Category).all()
+    item = session.query(Item).filter_by(name=item_name).one()
+    return render_template('deleteItem.html', categories=categories, item=item)
 
 @app.route('/catalog.json')
 def json___():

@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block content %}
+  <h2 class="my-4">Delete item</h2>
+  <p class="text-center">Are you sure to delete this item?</p>
+  <div class="card m-4 p-4 w-25 h-25 mx-auto text-justify">
+    <img class="card-img-top" src="{{ item.image_url }}" alt="{{ item.name }}">
+    <div class="card-block m-3 text-center">
+      <h4 class="card-title">{{ item.name.capitalize() }}</h4>
+    </div>
+  </div>
+  <form action="#" method='post'>
+    <div class="text-center">
+      <button type="submit" class="btn btn-warning">Delete</button>
+    </div>
+  </form>
+{% endblock content %}
