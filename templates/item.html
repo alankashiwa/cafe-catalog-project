@@ -2,9 +2,13 @@
 {% block content %}
   <div class="card m-4 p-4 w-50 h-50 mx-auto text-justify">
     <img class="card-img-top" src="{{ item.image_url }}" alt="{{ item.name }}">
-    <div class="card-block m-3">
+    <div class="card-block m-3 text-center">
       <h4 class="card-title">{{ item.name.capitalize() }}</h4>
       <p class="card-text">{{ item.description }}</p>
+      {% if session.username %}
+      <a class="btn btn-primary" href="{{ url_for('editItem', item_name=item.name) }}">Edit</a>
+      <a class="btn btn-warning" href="{{ url_for('deleteItem', item_name=item.name) }}">Delete</a>
+      {% endif %}
     </div>
   </div>
 {% endblock content %}
