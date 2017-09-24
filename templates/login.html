@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+{% block head %}
+<script src="https://apis.google.com/js/platform.js?onload=start" async defer></script>
+{% endblock head %}
+
+{% block content %}
+<div id="g-signinButton" class="my-3 text-center">
+  <span class="g-signin"
+  theme="light"
+     data-scope="openid email"
+     data-clientid="205361900973-fqfvrhsqspll9cin1fchfmegkok54bgt.apps.googleusercontent.com"
+     data-redirecturi="postmessage"
+     data-accesstype="offline"
+     data-cookiepolicy="single_host_origin"
+     data-callback="signInCallback"
+     data-approvalprompt="force">
+  </span>
+</div>
+<div id="result"></div>
+{% endblock content %}
+
+{% block script %}
+<script>
+function signInCallback(authResult) {
+  if (authResult['code']) {
+    // Hide the sign-button when user successfully signed in
+    $('#g-signinButton').attr('style', 'display: none');
+    $.ajax({
+      type: 'POST',
+      url: '/gconnect?state={{STATE}}',
+      processData: false,
+      contentType: 'application/octet-stream; charset=utf-8',
+      data: authResult['code'],
+      success: function(result) {
+        if(result) {
+          $('#result').html('Login Successful!<br>' + result + '<br>Redirecting...')
+          setTimeout(function(){
+            window.location.href="/";
+          }, 4000);
+          console.log('Login Success!!');
+        } else if (authResult['error']) {
+          console.log('There was an error: ' + authResult['error']);
+        } else {
+          $('#result').html('Failed to make a server-side call. Check your configuration and console.');
+        }
+      }
+    });
+  }
+}
+</script>
+{% endblock script %}
