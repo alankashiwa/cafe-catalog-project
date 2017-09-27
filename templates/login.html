@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block head %}
-<script src="https://apis.google.com/js/platform.js?onload=start" async defer></script>
+<script src="https://apis.google.com/js/client:platform.js?onload=start" async defer></script>
 {% endblock head %}
 
 {% block content %}
@@ -16,36 +16,90 @@
      data-approvalprompt="force">
   </span>
 </div>
+<div id="fb-signinButton" class="my-3 text-center">
+  <fb:login-button
+    size="large"
+    scope="public_profile,email"
+    onlogin="sendTokenToServer();">
+    Login with Facebook
+  </fb:login-button>
+</div>
 <div id="result"></div>
 {% endblock content %}
 
 {% block script %}
 <script>
-function signInCallback(authResult) {
-  if (authResult['code']) {
-    // Hide the sign-button when user successfully signed in
-    $('#g-signinButton').attr('style', 'display: none');
-    $.ajax({
-      type: 'POST',
-      url: '/gconnect?state={{STATE}}',
-      processData: false,
-      contentType: 'application/octet-stream; charset=utf-8',
-      data: authResult['code'],
-      success: function(result) {
-        if(result) {
-          $('#result').html('Login Successful!<br>' + result + '<br>Redirecting...')
-          setTimeout(function(){
-            window.location.href="/";
-          }, 4000);
-          console.log('Login Success!!');
-        } else if (authResult['error']) {
-          console.log('There was an error: ' + authResult['error']);
-        } else {
-          $('#result').html('Failed to make a server-side call. Check your configuration and console.');
+  // Google signin script
+  function signInCallback(authResult) {
+    if (authResult['code']) {
+      // Hide the sign-button when user successfully signed in
+      $('#g-signinButton').attr('style', 'display: none');
+      $.ajax({
+        type: 'POST',
+        url: '/gconnect?state={{STATE}}',
+        processData: false,
+        contentType: 'application/octet-stream; charset=utf-8',
+        data: authResult['code'],
+        success: function(result) {
+          if(result) {
+            $('#result').html('Login Successful!<br>' + result + '<br>Redirecting...')
+            setTimeout(function(){
+              window.location.href="/";
+            }, 4000);
+            console.log('Login Success!!');
+          } else if (authResult['error']) {
+            console.log('There was an error: ' + authResult['error']);
+          } else {
+            $('#result').html('Failed to make a server-side call. Check your configuration and console.');
+          }
         }
-      }
+      });
+    }
+  }
+
+  // FB signin script
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '305937676476718',
+      xfbml      : true,
+      version    : 'v2.10'
+    });
+    FB.AppEvents.logPageView();
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "https://connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+
+  function sendTokenToServer() {
+    var access_token = FB.getAuthResponse()['accessToken'];
+    console.log(access_token)
+    console.log('Welcome! Fetching your information...');
+    FB.api('/me', function(response){
+      console.log('Successful login for: ' + response.name);
+      $.ajax({
+        type: 'POST',
+        url: '/fbconnect?state={{STATE}}',
+        processData: false,
+        data: access_token,
+        contentType: 'application/octet-stream; charset=utf-8',
+        success: function(result) {
+          // Handle or verify the server response if necessary
+          if(result) {
+            $('#result').html('Login Successful!<br>' + result + '<br>Redirecting...')
+            setTimeout(function(){
+              window.location.href="/";
+            }, 4000);
+          } else {
+            $('#result').html('Failed to make a server-side call. Check your configuration and console.')
+          }
+        }
+      });
     });
   }
-}
 </script>
 {% endblock script %}

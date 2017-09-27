@@ -1,4 +1,27 @@
 {% extends "layout.html" %}
 {% block content %}
-
+<div class="row">
+  <div class="col-10">
+    <h1 class="my-4">Latest Items</h1>
+  </div>
+  <div class="col-2">
+    {% if session.username %}
+    <a class="btn btn-info m-4" href="{{ url_for('createItem') }}">Add item</a>
+    {% endif %}
+  </div>
+</div>
+<div class="row">
+  {% for item in items %}
+  <div class="col-lg-4 col-sm-6 catalog-item">
+    <div class="card p-2">
+      <img class="card-img-top" src="{{ item.image_url }}" alt="{{ item.name }}">
+      <div class="card-block text-center">
+        <h5 class="card-title m-3">{{ item.name.capitalize() }}</h5>
+        <h6><i>({{ item.category.name.capitalize() }})</i></h6>
+        <p class="card-text"><a href="{{ url_for('item', category_name=item.category.name, item_name=item.name)}}">Detail</a></p>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
 {% endblock content %}

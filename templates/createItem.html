@@ -1,41 +1,37 @@
 {% extends "layout.html" %}
 {% block content %}
-  <h2 class="my-4">Edit Item</h2>
+  <h2 class="my-4">Create Item</h2>
   <form action="#" method="post">
     <div class="form-group row">
       <label for="name" class="col-sm-2 col-form-label">Title</label>
       <div class="col-sm-10">
-        <input class="form-control" type="text" maxlength="50" value="{{ item.name }}" name="name">
+        <input class="form-control" type="text" maxlength="50" placeholder="Name of the item" name="name">
       </div>
     </div>
     <div class="form-group row">
       <label for="description" class="col-sm-2 col-form-label">Description</label>
       <div class="col-sm-10">
-        <input class="form-control" type="text" maxlength="250" value="{{ item.description }}" name="description">
+        <input class="form-control" type="text" maxlength="250" placeholder="Description of the item" name="description">
       </div>
     </div>
     <div class="form-group row">
       <label for="price" class="col-sm-2 col-form-label">Price</label>
       <div class="col-sm-10">
-        <input class="form-control" type="text" maxlength="8" value="{{ item.price }}" name="price">
+        <input class="form-control" type="text" maxlength="8" placeholder="Price of the item" name="price">
       </div>
     </div>
     <div class="form-group row">
       <label for="image_url" class="col-sm-2 col-form-label">Image Url</label>
       <div class="col-sm-10">
-        <input class="form-control" type="text" maxlength="250" value="{{ item.image_url }}" name="image_url">
+        <input class="form-control" type="text" maxlength="250" placeholder="Url for the image" name="image_url">
       </div>
     </div>
     <div class="form-group row">
       <label for="category" class="col-sm-2 col-form-label">Category</label>
       <div class="col-sm-10">
-        <select class="form-control" value="{{ item.category.name }}" name="category">
+        <select class="form-control" name="category">
           {% for category in categories %}
-          {% if category.name == item.category.name %}
-          <option value="{{ category.name }}" selected="selected">{{ category.name }}</option>
-          {% else %}
           <option value="{{ category.name }}">{{ category.name }}</option>
-          {% endif %}
           {% endfor %}
         </select>
       </div>
