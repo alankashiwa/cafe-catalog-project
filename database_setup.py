@@ -16,13 +16,15 @@ class Category(Base):
     __tablename__ = 'category'
     name = Column(String(50), nullable = False)
     id = Column(Integer, primary_key = True)
+    items = relationship('Item')
 
     @property
     def serialize(self):
         """ """
         return {
-            'name': self.name,
             'id': self.id,
+            'name': self.name,
+            'Item': [i.serialize for i in self.items],
         }
 
 class Item(Base):
@@ -41,9 +43,10 @@ class Item(Base):
     def serialize(self):
         """ """
         return {
-            'name': self.name,
-            'id': self.id,
+            'cat_id': self.category_id,
             'description': self.description,
+            'id': self.id,
+            'title': self.name,
             'price': self.price,
         }
 

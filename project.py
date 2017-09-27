@@ -362,7 +362,11 @@ def getUserID(email):
     except:
         return None
 
-
+# JSON API for this app
+@app.route('/catalog.json')
+def catalogJSON():
+    categories = session.query(Category).all()
+    return jsonify(category=[c.serialize for c in categories])
 
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
