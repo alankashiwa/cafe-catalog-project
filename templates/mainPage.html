@@ -1,5 +1,14 @@
 {% extends "layout.html" %}
 {% block content %}
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class="alert alert-warning" role="alert">
+        {% for message in messages %}
+        <strong> {{ message }} </strong>
+        {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
 <div class="row">
   <div class="col-10">
     <h1 class="my-4">Latest Items</h1>

@@ -284,6 +284,7 @@ def createItem():
                        user_id=login_session['user_id'])
         session.add(newItem)
         session.commit()
+        flash('New Item: %s Successfully Created' % newItem.name)
         return redirect(url_for('category', category_name=newItem.category.name))
     else:
         return render_template('createItem.html',categories=categories)
@@ -314,6 +315,7 @@ def editItem(item_name):
             editedItem.category = session.query(Category).filter_by(name=itemCategoryName).one()
         session.add(editedItem)
         session.commit()
+        flash('Item Successfully Edited')
         return redirect(url_for('category', category_name=itemCategoryName))
     else:
         return render_template('editItem.html',
@@ -335,6 +337,7 @@ def deleteItem(item_name):
         redirectCategoryName = itemToDelete.category.name
         session.delete(itemToDelete)
         session.commit()
+        flash('Item Successfully Deleted')
         return redirect(url_for('category',category_name=redirectCategoryName))
     else:
         return render_template('deleteItem.html',
