@@ -4,7 +4,7 @@ This is the third project of [Udacity](https://www.udacity.com): [Full Stack Web
 **by Alan Po-Ching**
 
 # About the project
-Design and implement a database driven catalog website that allows user to create and manage their own items after logining via google+ or facebook. The theme for this website is *"cafe"*.
+Design and implement a database driven catalog website that allows user to create and manage their own items after login via google+ or facebook. The theme for this website is *"cafe"*.
 
 # Libraries and Dependencies
 * Python 2
