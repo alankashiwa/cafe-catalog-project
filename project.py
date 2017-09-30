@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect
 from flask import url_for, flash, jsonify
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm.exc import NoResultFound
 from database_setup import Base, User, Category, Item
 
 from flask import session as login_session
@@ -407,13 +408,23 @@ def getUserID(email):
         return None
 
 
-# JSON API for this app
+# JSON API for the whole catalog
 @app.route('/catalog.json')
 def catalogJSON():
-    """ JSON API """
+    """ JSON API for all items """
     categories = session.query(Category).all()
-    return jsonify(category=[c.serialize for c in categories])
+    return jsonify(Category=[c.serialize for c in categories])
 
+
+# JSON API for an arbitrary item
+@app.route('/catalog/<string:item_name>/JSON/')
+def itemJSON(item_name):
+    """ JSON API for a specific item """
+    try:
+        item = session.query(Item).filter_by(name=item_name).one()
+        return jsonify(Item=item.serialize)
+    except NoResultFound:
+        return "[Error] The item does not exist:  %s" % item_name
 
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
