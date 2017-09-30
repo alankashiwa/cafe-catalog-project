@@ -4,6 +4,15 @@
 {% endblock head %}
 
 {% block content %}
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class="alert alert-warning" role="alert">
+        {% for message in messages %}
+        <strong> {{ message }} </strong>
+        {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
 <div id="g-signinButton" class="my-3 text-center">
   <span class="g-signin"
   theme="light"

@@ -5,6 +5,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
 from database_setup import Base, User, Category, Item
 
+from functools import wraps
 from flask import session as login_session
 import random
 import string
@@ -61,6 +62,18 @@ def logout():
     else:
         flash("You were not logged in")
         return redirect(url_for('mainPage'))
+
+
+def login_required(f):
+    """Decorator function to check user login """
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'username' in login_session:
+            return f(*args, **kwargs)
+        else:
+            flash("Please Login!")
+            return redirect('/login/')
+    return decorated_function
 
 
 @app.route('/gconnect', methods=['POST'])
@@ -297,11 +310,9 @@ def item(category_name, item_name):
 
 
 @app.route('/catalog/new/', methods=['GET', 'POST'])
+@login_required
 def createItem():
     """ Display the item creation form """
-    # if user not logged in, redirect user to login page
-    if 'username' not in login_session:
-        return redirect('/login/')
     categories = session.query(Category).all()
     if request.method == 'POST':
         category = (session.query(Category)
@@ -321,11 +332,9 @@ def createItem():
 
 
 @app.route('/catalog/<string:item_name>/edit/', methods=['GET', 'POST'])
+@login_required
 def editItem(item_name):
     """Display the item edition form """
-    # if user not logged in, redirect user to login page
-    if 'username' not in login_session:
-        return redirect('/login/')
     editedItem = session.query(Item).filter_by(name=item_name).one()
     categories = session.query(Category).all()
     if editedItem.user_id != login_session['user_id']:
@@ -358,10 +367,9 @@ def editItem(item_name):
 
 
 @app.route('/catalog/<string:item_name>/delete/', methods=['GET', 'POST'])
+@login_required
 def deleteItem(item_name):
     """ Display item deletetion page """
-    if 'username' not in login_session:
-        return redirect('/login/')
     categories = session.query(Category).all()
     itemToDelete = session.query(Item).filter_by(name=item_name).one()
     if itemToDelete.user_id != login_session['user_id']:
