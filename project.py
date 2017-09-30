@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect
 from flask import url_for, flash, jsonify
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, desc
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
 from database_setup import Base, User, Category, Item
@@ -268,7 +268,7 @@ def mainPage():
     """ Display the main page and lastest items """
     categories = session.query(Category).all()
     # Get the latest 6 items
-    items = session.query(Item).all()[:6:-1]
+    items = session.query(Item).order_by(desc(Item.id))[:6]
     return render_template('mainPage.html',
                            categories=categories,
                            items=items)
